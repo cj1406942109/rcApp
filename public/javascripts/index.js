@@ -41,14 +41,14 @@ $(function() {
 
     function bookAnimate() {
         $('.img-part img').hide();
-        $('.img1').fadeIn(1500, function() {
-            $('.img2').fadeIn(1000, function() {
-                $('.img3').fadeIn(500, function() {
-                    $('.img4').fadeIn(1000, function() {
-                        $('.img5').fadeIn(500, function() {
-                            $('.img6').fadeIn(1000, function() {
-                                $('.img7').fadeIn(500, function() {
-                                    $('.img8').fadeIn(1000, function() {
+        $('.img1').fadeIn('fast', function() {
+            $('.img2').fadeIn('fast', function() {
+                $('.img3').fadeIn('fast', function() {
+                    $('.img4').fadeIn('fast', function() {
+                        $('.img5').fadeIn('fast', function() {
+                            $('.img6').fadeIn('fast', function() {
+                                $('.img7').fadeIn('fast', function() {
+                                    $('.img8').fadeIn('fast', function() {
                                         // $('.arrow button').fadeIn();
                                     });
                                 });
@@ -68,7 +68,7 @@ $(function() {
             var left = $(this).attr('data-left')
             var $this = $(this);
             setTimeout(function() {
-                $this.fadeIn(1000, function() {
+                $this.fadeIn(500, function() {
                     $this.animate({
                         top: top,
                         left: left,
@@ -87,8 +87,11 @@ $(function() {
 
 
     // 启动按钮点击事件
-    $('#startBtn').click(function() {
-        location.href = "./signup";
-    })
+    $('#startBtn').on('mouseup', function() {
+            location.href = "./signup";
+        })
+        // $('#startBtn').on('click', function() {
+        //     location.href = "./signup";
+        // })
 
 });

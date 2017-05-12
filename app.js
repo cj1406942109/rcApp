@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var busboy = require('connect-busboy');
 
 // var index = require('./routes/index');
 var routes = require('./routes/index');
@@ -41,6 +42,8 @@ app.use(session({
     })
 }));
 // app.use('/', index);
+app.use(busboy());
+
 routes(app);
 
 // catch 404 and forward to error handler

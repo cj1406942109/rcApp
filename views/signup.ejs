@@ -9,56 +9,44 @@
     <!-- page five start -->            
     <div class="sign-up-page">
       <h1>报名</h1>
-      <form action="singup" method="post">
+      <form action="/signup" method="post" enctype="multipart/form-data">
         <div>姓名：<input type="text" name="name"></div>
         <div>手机：<input type="tel" name="tel"></div>
         <div>
           原创作品：<input type="radio" name="original" value="true" checked>
           非原创作品：<input type="radio" name="original" value="false">
         </div>
-      </form>
-      <form action="" enctype="multipart/form-data" method="post">
         <div>
           上传家书：<br>
-          <input type="file" name="" accept="image/png, image/jpeg, image/gif, image/jpg" hidden>
+          <input type="file" name="img1" accept="image/png, image/jpeg, image/gif, image/jpg" hidden>
+          <input type="file" name="img2" accept="image/png, image/jpeg, image/gif, image/jpg" hidden>
+          <input type="file" name="img3" accept="image/png, image/jpeg, image/gif, image/jpg" hidden>
         </div>
+        
         <div id="imgAdd">
           <button type="button"><img src="./images/add.png" alt=""></button>
         </div>
-      </form>
-      <form action="">
-        <div>
-          上传我的朗读：<input type="text" name="audio">
+        <div class="preview">
+            <img id="prev1" src="" alt="">
+            <img id="prev2" src="" alt="">
+            <img id="prev3" src="" alt="">
+            <p>点击图片重新上传</p>
         </div>
+        
+        <div>
+          上传我的朗读：<input type="file" name="audio" accept="audio/mpeg, audio/mp4, audio/3gpp, audio/ogg" hidden>
+        </div>
+        <div id="record">
+          <img src="./images/audio.png" alt=""><br>
+          <button type="button">点击&nbsp;&nbsp;上传</button>
+        </div>
+        <input type="submit" hidden>
       </form>    
       <h1 id="submit">我要报名</h1>
     </div>
     <!-- page five end -->
     <script src="./javascripts/jquery-3.2.1.min.js"></script>
     <script src="./javascripts/justify-font-size.js"></script>
-    <script>
-      $(function(){
-        $('#submit').click(function(){
-          var name = $("input[name='name']").val();
-          var tel = $("input[name='tel']").val();
-          var original = $("input[name='original']:checked").val();
-          // console.log(original);
-          var regExpTel = /^1[34578]\d{9}$/;
-          if(name===''){
-            alert('姓名不能为空！')
-          }else if(tel === ''){
-            alert('手机号不能为空！')
-          }else if(!regExpTel.test(tel)){
-            alert('手机号格式错误，请重新填写！')
-          }
-        });
-
-        // 解决输入框弹出时背景图发生改变
-        var originHeight = window.innerHeight;
-        window.onresize=function(){
-          $('html').height(originHeight);
-        }
-      });
-    </script>
+    <script src="./javascripts/signup.js"></script>
   </body>
   </html>

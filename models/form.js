@@ -1,10 +1,12 @@
 var mongodb = require('./db');
 
-function Form(name, tel, original, img, audio) {
+function Form(name, tel, original, img1, img2, img3, audio) {
     this.name = name;
     this.tel = tel;
     this.original = original;
-    this.img = img;
+    this.img1 = img1;
+    this.img2 = img2;
+    this.img3 = img3;
     this.audio = audio;
 }
 
@@ -29,7 +31,9 @@ Form.prototype.save = function(callback) {
         name: this.name,
         tel: this.tel,
         original: this.original,
-        img: this.img,
+        img1: this.img1,
+        img2: this.img2,
+        img3: this.img3,
         audio: this.audio
     };
 
@@ -61,7 +65,7 @@ Form.prototype.save = function(callback) {
 };
 
 //根据电话获取报名表信息
-Form.get = function(tel, callback) {
+Form.getByPhone = function(tel, callback) {
     //打开数据库
     mongodb.open(function(err, db) {
         if (err) {
@@ -94,7 +98,7 @@ Form.get = function(tel, callback) {
 };
 
 //获取所有报名表信息
-Form.get = function(callback) {
+Form.getAll = function(callback) {
     //打开数据库
     mongodb.open(function(err, db) {
         if (err) {

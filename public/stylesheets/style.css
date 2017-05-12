@@ -280,7 +280,7 @@ body {
 }
 
 .intro h1 {
-    margin: 0.08rem 0;
+    margin: 0.2rem 0;
     font-size: 0.36rem;
     text-align: center;
 }
@@ -290,7 +290,7 @@ body {
 }
 
 .intro .item {
-    margin: 0.05rem;
+    margin: 0.2rem;
 }
 
 .intro .item p {
@@ -321,28 +321,31 @@ body {
 }
 
 .start-page .slogan p {
+    color: #000;
     font-size: 0.24rem;
     text-indent: 0.48rem;
 }
 
 .start-page .start-btn h1 {
     padding: 0;
-    margin: -0.3rem 0 0 0;
+    margin: -0.7rem 0 0 0;
 }
 
 .start-page .start-btn p {
+    display: none;
     margin-top: 1.2rem;
     font-size: 0.24rem;
 }
 
 .start-page .start-btn {
     border: 0.01rem solid transparent;
-    margin: 0.5rem auto;
-    width: 3.9rem;
-    height: 1.35rem;
+    margin: 0.8rem auto;
+    width: 1.35rem;
+    height: 1.4rem;
+    border-radius: 0.03rem;
     margin-top: 1.4rem;
-    background: url(../images/start_hand.png);
-    background-size: 3.9rem 1.35rem;
+    background: url(../images/fingerprint.gif) -0.15rem -0.12rem;
+    background-size: 1.65rem 1.65rem;
 }
 
 
@@ -357,7 +360,7 @@ body {
 }
 
 .sign-up-page h1 {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     font-size: 0.48rem;
     text-align: center;
 }
@@ -403,9 +406,51 @@ body {
     margin-right: 0.3rem;
 }
 
+.sign-up-page .preview {
+    display: none;
+    width: 4.5rem;
+}
+
+.sign-up-page .preview p {
+    text-align: center;
+    font-size: 0.16rem;
+}
+
+.sign-up-page .preview img {
+    display: none;
+    max-width: 1.2rem;
+    max-height: 1rem;
+    margin-left: 0.1rem;
+}
+
 .sign-up-page #imgAdd {
     margin: 0 auto;
     text-align: center;
+}
+
+.sign-up-page #record {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.sign-up-page #record img {
+    display: none;
+    width: 2rem;
+    margin-bottom: -0.2rem;
+}
+
+.sign-up-page #record button {
+    margin-top: 0.5rem;
+    width: 3.0rem;
+    color: #666;
+    background-color: #eee;
+    font-size: 0.24rem;
+    height: 0.6rem;
+    border-radius: 0.05rem;
+}
+
+.sign-up-page #record button:active {
+    background-color: #ccc;
 }
 
 .sign-up-page form input[name=audio] {
