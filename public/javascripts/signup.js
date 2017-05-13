@@ -44,9 +44,9 @@ $(function() {
         }
     })
 
-    $("input[name='audio']").change(function() {
-        $('#record img').show();
-    })
+    // $("input[name='audio']").change(function() {
+    //     $('#record audio').show();
+    // })
 
     $('#prev1').click(function() {
         $("input[name='img1']").click();
@@ -93,18 +93,94 @@ $(function() {
     }
 
 
-    //报名页面录音按钮
-    $('#record button').click(function() {
+    //录音功能调用微信jssdk实现
+    wx.ready(function() {
+            wx.onVoiceRecordEnd({
+                // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+                complete: function(res) {
+                    playVoice(res.localId);
+                    uploadVoice(res.localId);
+                }
+            });
 
-        // navigator.mediaDevices.getUserMedia({ audio: true, video: false }, function(mediaStream) {
-        //     var video = document.querySelector('video');
-        //     video.src = window.URL.createObjectURL(mediaStream);
-        //     video.onloadedmetadata = function(e) {
-        //         // Do something with the video here.
-        //     };
-        // }, function(err) {
-        //     console.log(err.name);
-        // });
-        $("input[name='audio']").click();
-    })
+            wx.onVoicePlayEnd({
+                success: function(res) {
+                    stopWave();
+                }
+            });
+        })
+        //报名页面录音按钮
+    var startTime = 0;
+    var endTime = 0;
+    var recordTimer;
+    $('#record button').on('touchstart', function() {
+        // $("input[name='audio']").click();
+        event.preventDefault();
+        startTime = new Date().getTime();
+        recordTimer = setTimeout(function() {
+            wx.startRecord({
+                success: function() {
+                    localStorage.rainAllowRecord = 'true';
+                },
+                cancel: function() {
+                    alert('用户拒绝授权录音');
+                }
+            });
+        }, 300);
+    });
+
+    $('#record button').on('touchend', function() {
+        event.preventDefault();
+        endTime = new Date().getTime();
+        if ((endTime - startTime) < 300) {
+            endTime = 0;
+            startTime = 0;
+            //小于300ms，不录音
+            clearTimeout(recordTimer);
+        } else {
+            wx.stopRecord({
+                success: function(res) {
+                    playVoice(res.localId);
+                    uploadVoice(res.localId);
+                },
+                fail: function(res) {
+                    alert(JSON.stringify(res));
+                }
+            });
+        }
+    });
+
+    function playVoice(localId) {
+        $('#record img').show();
+        $('#record img').click(function() {
+            wx.playVoice({
+                localId: localId // 需要播放的音频的本地ID，由stopRecord接口获得
+            });
+        })
+    }
+    //上传录音
+    function uploadVoice(localId) {
+        //调用微信的上传录音接口把本地录音先上传到微信的服务器
+        //不过，微信只保留3天，而我们需要长期保存，我们需要把资源从微信服务器下载到自己的服务器
+        wx.uploadVoice({
+            localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+            isShowProgressTips: 1, // 默认为1，显示进度提示
+            success: function(res) {
+                //把录音在微信服务器上的id（res.serverId）发送到自己的服务器供下载。
+                $("input[name='audio']").val(localId);
+                // $.ajax({
+                //     url: '/downloadAudio',
+                //     type: 'post',
+                //     data: JSON.stringify(res),
+                //     dataType: "json",
+                //     success: function(data) {
+                //         console.log('文件已经保存到服务器');
+                //     },
+                //     error: function(xhr, errorType, error) {
+                //         console.log(error);
+                //     }
+                // });
+            }
+        });
+    }
 });

@@ -1,6 +1,15 @@
 var multer = require('multer');
-
+var https = require('https');
+var http = require('http');
+var fs = require('fs');
+var config = require('../config.js');
 var Form = require('../models/form.js');
+
+
+var appId = config.wxConfig.appId;
+var secret = config.wxConfig.appSecret;
+var accessToken = "";
+
 
 module.exports = function(app) {
     app.get('/', function(req, res, next) {
@@ -8,11 +17,19 @@ module.exports = function(app) {
     });
 
     app.get('/signup', function(req, res, next) {
-        res.render('signup', { title: '“家书抵万金”朗读大赛' });
+        getAccessToken(appId, secret);
+        res.render('signup', {
+            title: '“家书抵万金”朗读大赛',
+            appId: config.wxConfig.appId,
+            signature: req.query.signature,
+            timestamp: req.query.timestamp,
+            nonceStr: req.query.nonce
+        });
     });
 
     app.get('/success', function(req, res, next) {
         res.render('success', { title: '“家书抵万金”朗读大赛' });
+
     });
 
 
@@ -32,19 +49,28 @@ module.exports = function(app) {
     })
 
     var upload = multer({ storage: storage })
-    var cpUpload = upload.fields([{ name: 'img1', maxCount: 1 }, { name: 'img2', maxCount: 1 }, { name: 'img3', maxCount: 1 }, { name: 'audio', maxCount: 1 }]);
+    var cpUpload = upload.fields([{ name: 'img1', maxCount: 1 }, { name: 'img2', maxCount: 1 }, { name: 'img3', maxCount: 1 }]);
+
     app.post('/signup', cpUpload, function(req, res, next) {
 
         var name = req.body.name;
         var tel = req.body.tel;
         var original = req.body.original;
-
+        var audioId = req.body.audio;
+        var audio = {
+            fieldname: 'audio',
+            mimetype: '',
+            destination: './uploads/audios',
+            filename: '',
+            path: '',
+            size: ''
+        };
         // console.log(name + tel + original);
         //判断req.files['name']是否undefined
         var img1 = '';
         var img2 = '';
         var img3 = '';
-        var audio = '';
+        // var audio = '';
 
         if (req.files['img1']) {
             img1 = req.files['img1'][0];
@@ -58,20 +84,80 @@ module.exports = function(app) {
             img3 = req.files['img3'][0];
             // saveImg(img3, targetDir);
         }
-        if (req.files['audio']) {
-            audio = req.files['audio'][0];
-            // saveImg(img3, targetDir);
-        }
+        // if (req.files['audio']) {
+        //     audio = req.files['audio'][0];
+        //     // saveImg(img3, targetDir);
+        // }
         // var img2 = req.files['img2'][0];
         // var img3 = req.files['img3'][0];
         // console.log(img1);
-        var form = new Form(name, tel, original, img1, img2, img3, audio);
-        form.save(function(err) {
-            if (err) {
-                req.flash('error', err);
-                return res.redirect('/signup');
-            }
-            res.redirect('/success');
+
+        //根据audioId从微信服务器下载音频文件
+        function downloadFile(accessToken, mediaId) {
+            var url = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + mediaId;
+            http.get(url, function(res) {
+                audio.mimetype = res.headers['content-type'];
+                res.setEncoding("binary");
+                var fileName = "audio-" + Date.now() + "." + audio.mimetype.split('/')[1];
+                audio.filename = fileName;
+                audio.path = "uploads\\audios\\" + fileName;
+                audio.size = res.headers['content-length'];
+
+                var rawData = '';
+                res.on('data', (chunk) => { rawData += chunk; });
+                res.on('end', () => {
+                    try {
+                        fs.writeFile("./uploads/audios/" + fileName, rawData, "binary", function(err) {
+                            if (err) throw err;
+                            // console.log('The file has been saved!');
+                        });
+
+                        //表单存储到数据库
+                        var form = new Form(name, tel, original, img1, img2, img3, audio);
+                        form.save(function(err) {
+                            if (err) {
+                                req.flash('error', err);
+                                return res.redirect('/signup');
+                            }
+                            res.redirect('/success');
+                        })
+
+                    } catch (e) {
+                        console.error(e.message);
+                    }
+                });
+            })
+        }
+    });
+
+    app.post('/getWeChatConfig', function(req, res) {
+        var signature = req.query.signature;
+        var timestamp = req.query.timestamp;
+        var nonceStr = req.query.nonce;
+        var appId = config.wxConfig.appId;
+
+        res.json({
+            appId: appId,
+            timestamp: timestamp,
+            signature: signature,
+            nonceStr: nonceStr
         })
     });
+
+
+    function getAccessToken(appId, secret) {
+        https.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + secret, function(res) {
+            res.setEncoding('utf8');
+            var rawData = '';
+            res.on('data', (chunk) => { rawData += chunk; });
+            res.on('end', () => {
+                try {
+                    const parsedData = JSON.parse(rawData);
+                    accessToken = parsedData.access_token;
+                } catch (e) {
+                    console.error(e.message);
+                }
+            });
+        });
+    }
 };
