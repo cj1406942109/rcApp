@@ -2,13 +2,21 @@ var multer = require('multer');
 var https = require('https');
 var http = require('http');
 var fs = require('fs');
+var sha1 = require('sha1');
 var config = require('../config.js');
 var Form = require('../models/form.js');
 
 
 var appId = config.wxConfig.appId;
 var secret = config.wxConfig.appSecret;
+var timestamp = config.wxConfig.timestamp
+var noncestr = config.wxConfig.nonceStr;
+var url = config.wxConfig.url;
 var accessToken = "";
+var jsapi_ticket = "";
+var signature = "";
+getAccessToken(appId, secret);
+
 
 
 module.exports = function(app) {
@@ -17,13 +25,13 @@ module.exports = function(app) {
     });
 
     app.get('/signup', function(req, res, next) {
-        getAccessToken(appId, secret);
         res.render('signup', {
             title: '“家书抵万金”朗读大赛',
-            appId: config.wxConfig.appId,
-            signature: req.query.signature,
-            timestamp: req.query.timestamp,
-            nonceStr: req.query.nonce
+            appId: appId,
+            signature: signature,
+            timestamp: timestamp,
+            nonceStr: noncestr,
+            jsapi_ticket: jsapi_ticket
         });
     });
 
@@ -144,20 +152,47 @@ module.exports = function(app) {
         })
     });
 
-
-    function getAccessToken(appId, secret) {
-        https.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + secret, function(res) {
-            res.setEncoding('utf8');
-            var rawData = '';
-            res.on('data', (chunk) => { rawData += chunk; });
-            res.on('end', () => {
-                try {
-                    const parsedData = JSON.parse(rawData);
-                    accessToken = parsedData.access_token;
-                } catch (e) {
-                    console.error(e.message);
-                }
-            });
-        });
-    }
 };
+
+function getAccessToken(appId, secret) {
+    https.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + secret, function(res) {
+        res.setEncoding('utf8');
+        var rawData = '';
+        res.on('data', (chunk) => { rawData += chunk; });
+        res.on('end', () => {
+            try {
+                const parsedData = JSON.parse(rawData);
+                accessToken = parsedData.access_token;
+                getjsApiTicket(accessToken)
+            } catch (e) {
+                console.error(e.message);
+            }
+        });
+    });
+}
+
+function getjsApiTicket(accessToken) {
+    https.get("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + accessToken + "&type=jsapi", function(res) {
+        res.setEncoding('utf8');
+        var rawData = '';
+        res.on('data', (chunk) => { rawData += chunk; });
+        res.on('end', () => {
+            try {
+                const parsedData = JSON.parse(rawData);
+                jsapi_ticket = parsedData.ticket;
+                signature = getJsSdkSignature(jsapi_ticket, noncestr, timestamp, url);
+            } catch (e) {
+                console.error(e.message);
+            }
+        });
+    });
+}
+
+function getJsSdkSignature(jsapi_ticket, noncestr, timestamp, url) {
+    var string = "jsapi_ticket=" + jsapi_ticket;
+    string += "&noncestr=" + noncestr;
+    string += "&timestamp=" + timestamp;
+    string += "&url=" + url;
+    var signature = sha1(string);
+    return signature;
+}
