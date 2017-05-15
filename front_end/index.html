@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>百万武汉人共同启动“家书抵万金”朗读大赛</title>
+    <link type="image/x-icon" rel="shortcut icon" href="./assets/images/favicon.ico" />
+    <link rel="stylesheet" href="./assets/swiper/swiper.min.css">
+    <link rel='stylesheet' href='./assets/css/style.css'>
+
+</head>
+
+<body>
+    <img src="http://zhuiqiuwang.net/wx/assets/images/share.jpg" width="0" height="0" style="position:absolute;z-index:-1;">
+    <!--<div style="display:none"><img src="./assets/images/share.jpg" width="0" height="0" style="position:absolute;z-index:-1;visibility:hidden;"></div>-->
+    <div id="audioBtn" class="rotate">
+        <audio loop="" src="./assets/videos/suiyuejiashu.mp3" id="media" autoplay="" preload="auto"></audio>
+    </div>
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+
+            <div class="swiper-slide index-page"></div>
+            <div class="swiper-slide intro-page"></div>
+
+            <div class="swiper-slide start-page">
+                <video src="./assets/videos/demo.mp4" x-webkit-airplay="true" webkit-playsinline="true" controls></video>
+                <div class="start-btn" id="startBtn">
+                    <!--<h1>启动</h1>-->
+                </div>
+            </div>
+            <div class="swiper-slide signup-page">
+                <div class="title"><img src="./assets/images/baoming.png" alt=""></div>
+
+                <form method="post" enctype="multipart/form-data" name="signupForm">
+                    <div class="name">
+                        <input type="text" name="name">
+                    </div>
+                    <div class="phone"><input type="tel" name="tel"></div>
+                    <div class="original">
+                        <input type="radio" name="original" value="true" checked>
+                        <input type="radio" name="original" value="false">
+                    </div>
+                    <div class="jiashu">
+                        <input type="file" name="img1" accept="image/png, image/jpeg, image/gif, image/jpg">
+                        <input type="file" name="img2" accept="image/png, image/jpeg, image/gif, image/jpg">
+                        <input type="file" name="img3" accept="image/png, image/jpeg, image/gif, image/jpg">
+                    </div>
+
+                    <div id="imgAdd">
+                        <button type="button"><img src="./assets/images/add.png" alt=""></button>
+                    </div>
+                    <div class="preview">
+                        <img id="prev1" src="" alt="">
+                        <img id="prev2" src="" alt="">
+                        <img id="prev3" src="" alt="">
+                        <p>点击图片重新上传</p>
+                    </div>
+
+                    <div class="langdu">
+                        <input type="text" name="audio" hidden>
+                    </div>
+
+                    <!--<input type="submit" hidden>-->
+
+                </form>
+                <div id="record">
+                    <button id="recordBtn">按住&nbsp;&nbsp;说话</button>
+                    <button id="playBtn">播放录音</button>
+                </div>
+                <div id="submit">
+                    <a href="javascript:;"><img src="./assets/images/woyaobaoming.png" alt=""></a>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-scrollbar"></div>
+    </div>
+
+</body>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="./assets/js/jquery-3.2.1.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="./assets/swiper/swiper.min.js"></script>
+<script src="./assets/js/html5media.min.js"></script>
+<script src="./assets/js//justify-font-size.js"></script>
+<script src="./assets/js/index.js" type="text/javascript"></script>
+<script>
+    $.ajax({
+        type: 'post',
+        url: 'http://114.55.175.41:3000/getWxConfig',
+        data: {
+            url: location.href.split('#')[0]
+        },
+        dataType: 'json',
+        success: function(data) {
+            wx.config({
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: 'wxf1d75feab13b1472',
+                timestamp: data.timestamp, // 必填，生成签名的时间戳
+                nonceStr: data.nonceStr, // 必填，生成签名的随机串
+                signature: data.signature, // 必填，签名，见附录1
+                jsApiList: [
+                    'playVoice',
+                    'pauseVoice',
+                    'stopVoice',
+                    'uploadVoice',
+                    'stopVoice',
+                    'startRecord',
+                    'stopRecord',
+                    'onVoiceRecordEnd',
+                    'onMenuShareAppMessage',
+                    'translateVoice'
+                ]
+            });
+            wx.ready(function() {
+                    wx.onVoiceRecordEnd({
+                        // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+                        complete: function(res) {
+                            playVoice(res.localId);
+                            uploadVoice(res.localId);
+                        }
+                    });
+
+                    wx.onVoicePlayEnd({
+                        success: function(res) {
+                            stopWave();
+                        }
+                    });
+                })
+                //报名页面录音按钮
+            var startTime = 0;
+            var endTime = 0;
+            var recordTimer;
+            $('#recordBtn').on('touchstart', function() {
+                // $("input[name='audio']").click();
+                event.preventDefault();
+                startTime = new Date().getTime();
+                recordTimer = setTimeout(function() {
+                    wx.startRecord({
+                        success: function() {
+                            localStorage.rainAllowRecord = 'true';
+                        },
+                        cancel: function() {
+                            alert('用户拒绝授权录音');
+                        }
+                    });
+                }, 300);
+            });
+
+            $('#recordBtn').on('touchend', function() {
+                event.preventDefault();
+                endTime = new Date().getTime();
+                if ((endTime - startTime) < 300) {
+                    endTime = 0;
+                    startTime = 0;
+                    //小于300ms，不录音
+                    clearTimeout(recordTimer);
+                } else {
+                    wx.stopRecord({
+                        success: function(res) {
+                            playVoice(res.localId);
+                            uploadVoice(res.localId);
+                        },
+                        fail: function(res) {
+                            alert(JSON.stringify(res));
+                        }
+                    });
+                }
+            });
+
+            function playVoice(localId) {
+                $('#playBtn').show();
+                $('#playBtn').click(function() {
+                    wx.playVoice({
+                        localId: localId // 需要播放的音频的本地ID，由stopRecord接口获得
+                    });
+                })
+            }
+            //上传录音
+            function uploadVoice(localId) {
+                //调用微信的上传录音接口把本地录音先上传到微信的服务器
+                //不过，微信只保留3天，而我们需要长期保存，我们需要把资源从微信服务器下载到自己的服务器
+                wx.uploadVoice({
+                    localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+                    isShowProgressTips: 1, // 默认为1，显示进度提示
+                    success: function(res) {
+                        //把录音在微信服务器上的id（res.serverId）发送到自己的服务器供下载。
+                        $("input[name='audio']").val(res.serverId);
+                        // $.ajax({
+                        //     url: '/downloadAudio',
+                        //     type: 'post',
+                        //     data: JSON.stringify(res),
+                        //     dataType: "json",
+                        //     success: function(data) {
+                        //         console.log('文件已经保存到服务器');
+                        //     },
+                        //     error: function(xhr, errorType, error) {
+                        //         console.log(error);
+                        //     }
+                        // });
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+</html>

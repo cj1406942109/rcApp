@@ -1,0 +1,324 @@
+html {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    color: white;
+}
+
+#audioBtn {
+    position: absolute;
+    z-index: 99;
+    top: 0.4rem;
+    right: 0.4rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    cursor: pointer;
+    background-image: url(../images/playBtn.svg);
+    background-size: contain;
+}
+
+.rotate {
+    -webkit-animation: rotating 1.2s linear infinite;
+    -moz-animation: rotating 1.2s linear infinite;
+    -o-animation: rotating 1.2s linear infinite;
+    animation: rotating 1.2s linear infinite;
+}
+
+@keyframes rotating {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes rotating {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.swiper-container {
+    width: 100%;
+    height: 100%;
+}
+
+.index-page {
+    background: url(../images/index_bg.jpg) center;
+    background-size: 100% 100%;
+}
+
+.intro-page {
+    background: url(../images/intro.jpg) center;
+    background-size: 100% 100%;
+}
+
+.start-page {
+    background: url(../images/start_bg.jpg) center;
+    background-size: 100% 100%;
+    text-align: center;
+}
+
+.start-page video {
+    margin: 1.2rem auto;
+    width: 6rem;
+    /*height: 4rem;*/
+}
+
+.start-page .start-btn h1 {
+    padding: 0;
+    font-size: 0.48rem;
+    margin: -0.7rem 0 0 0;
+}
+
+.start-page .start-btn {
+    position: absolute;
+    bottom: 0.4rem;
+    left: 2.52rem;
+    border: 0.01rem solid transparent;
+    margin: 0.8rem auto;
+    width: 1.35rem;
+    height: 1.4rem;
+    border-radius: 0.03rem;
+    margin-top: 1.4rem;
+    background: url(../images/fingerprint.gif) -0.15rem -0.12rem;
+    background-size: 1.65rem 1.65rem;
+    user-select: none;
+}
+
+.signup-page {
+    background: url(../images/bg.jpg) center;
+    background-size: 100% 100%;
+}
+
+
+/*.signup-page input[type=button],
+input[type=submit],
+input[type=file],
+button {
+    cursor: pointer;
+    -webkit-appearance: none;
+}*/
+
+.signup-page .title {
+    text-align: center
+}
+
+.signup-page img {
+    height: 0.6rem;
+}
+
+.signup-page input {
+    font-size: 0.32rem;
+    border: none;
+}
+
+.signup-page .name {
+    /*border: 1px solid red;*/
+    padding-left: 1.5rem;
+    height: 0.42rem;
+    background: url(../images/name.png) 0 0 no-repeat;
+    background-size: auto 0.42rem;
+}
+
+.signup-page .phone {
+    /*border: 1px solid red;*/
+    padding-left: 1.5rem;
+    height: 0.42rem;
+    background: url(../images/phone.png) 0 0 no-repeat;
+    background-size: auto 0.42rem;
+}
+
+.signup-page .original {
+    height: 0.42rem;
+    padding-left: 2.2rem;
+    background: url(../images/yuanchuang.png) 0 0 no-repeat, url(../images/feiyuanchuang.png) 2.4rem 0 no-repeat;
+    background-size: auto 0.42rem;
+}
+
+.signup-page .original input:nth-of-type(1) {
+    margin-right: 2.5rem;
+}
+
+.signup-page .jiashu {
+    /*border: 1px solid red;*/
+    height: 0.42rem;
+    background: url(../images/jiashu.png) 0 0 no-repeat;
+    background-size: auto 0.42rem;
+}
+
+.signup-page .jiashu .hidden {
+    visibility: hidden;
+}
+
+.signup-page .jiashu.height {
+    height: 2rem;
+    text-align: center;
+    padding: 0.8rem 0 0 1rem;
+}
+
+.signup-page .langdu {
+    /*border: 1px solid red;*/
+    height: 0.42rem;
+    background: url(../images/langdu.png) 0 0 no-repeat;
+    background-size: auto 0.42rem;
+}
+
+.signup-page button {
+    border: none;
+    outline: none;
+}
+
+.signup-page h1 {
+    margin-top: 0.5rem;
+    font-size: 0.48rem;
+    text-align: center;
+}
+
+.signup-page form {
+    padding-left: 0.5rem;
+    /*height: 4.5rem;*/
+    font-size: 0.36rem;
+}
+
+.signup-page form button {
+    border: none;
+    padding: 0;
+    width: 0.8rem;
+    height: 0.8rem;
+    outline: none;
+}
+
+.signup-page button img {
+    width: 0.8rem;
+    height: 0.8rem;
+    /*-webkit-tap-highlight-color: transparent;*/
+}
+
+.signup-page form div {
+    margin: 0.2rem 0;
+}
+
+.signup-page form input[name=name] {
+    width: 2rem;
+}
+
+.signup-page form input[name=tel] {
+    width: 3rem;
+}
+
+.signup-page form input[type=radio] {
+    margin-left: -0.1rem;
+    margin-right: 0.3rem;
+}
+
+.signup-page .preview {
+    display: none;
+    width: 4.5rem;
+}
+
+.signup-page .preview p {
+    text-align: center;
+    font-size: 0.16rem;
+}
+
+.signup-page .preview img {
+    display: none;
+    max-width: 1.2rem;
+    max-height: 1rem;
+    margin-left: 0.1rem;
+}
+
+.signup-page #imgAdd {
+    margin: 0 auto;
+    text-align: center;
+    cursor: pointer;
+}
+
+.signup-page #record {
+    margin: 0 auto;
+    text-align: center;
+    user-select: none;
+}
+
+.signup-page #record img {
+    cursor: pointer;
+    display: none;
+    user-select: none;
+    width: 2rem;
+    margin-bottom: -0.2rem;
+}
+
+.signup-page #record audio {
+    margin: 0 auto;
+    display: none;
+}
+
+.signup-page #record button {
+    margin-top: 0.5rem;
+    width: 2.0rem;
+    color: #666;
+    background-color: #eee;
+    font-size: 0.24rem;
+    height: 0.6rem;
+    border-radius: 0.05rem;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/*.signup-page #record button:active {
+    background-color: #ccc;
+}
+
+.signup-page #record button:focus {
+    background-color: #3385FF;
+    color: #fff;
+}
+*/
+
+.signup-page form input[name=audio] {
+    margin: 0.2rem 0;
+    width: 2rem;
+}
+
+#submit {
+    margin-top: 0.2rem;
+    cursor: pointer;
+    text-align: center;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#submit img {
+    height: 0.6rem;
+    user-select: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#imgAdd,
+#prev1,
+#prev2,
+#prev3 {
+    cursor: pointer;
+}
