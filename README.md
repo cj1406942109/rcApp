@@ -1,12 +1,9 @@
 # rcApp
 reading competition sign up pages made by express
 
-# Quick Start
+# 说明
 
-```git 
-$ git clone https://github.com/cj1406942109/rcApp.git
-$ cd rcApp
-$ npm install
-$ npm start
-```
+> 前后端分离
+> 主要遇到的问题在于微信jssdk接口的调用和ios版本兼容
+
 
