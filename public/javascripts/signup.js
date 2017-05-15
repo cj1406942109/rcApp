@@ -1,6 +1,5 @@
 $(function() {
 
-    var currentNum = 0;
     $('#imgAdd').click(function() {
         if ($("input[name='img1']").val() == '') {
             $("input[name='img1']").click();
@@ -79,9 +78,11 @@ $(function() {
             alert('手机号格式错误，请重新填写！');
         } else if (!img1 && !img2 && !img3) {
             alert('至少上传一封家书！');
-        } else if (!audio) {
-            alert('请上传朗读音频');
-        } else {
+        }
+        //  else if (!audio) {
+        //     alert('请上传朗读音频');
+        // }
+        else {
             $("input[type='submit']").click();
         }
     });

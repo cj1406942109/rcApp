@@ -27,11 +27,10 @@ module.exports = function(app) {
     app.get('/signup', function(req, res, next) {
         res.render('signup', {
             title: '“家书抵万金”朗读大赛',
-            appId: appId,
-            signature: signature,
-            timestamp: timestamp,
-            nonceStr: noncestr,
-            jsapi_ticket: jsapi_ticket
+            appId: config.wxConfig.appId,
+            signature: req.query.signature,
+            timestamp: req.query.timestamp,
+            nonceStr: req.query.nonce
         });
     });
 
@@ -155,7 +154,7 @@ module.exports = function(app) {
 };
 
 function getAccessToken(appId, secret) {
-    https.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + secret, function(res) {
+    https.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=" + appId + "&secret=" + secret, function(res) {
         res.setEncoding('utf8');
         var rawData = '';
         res.on('data', (chunk) => { rawData += chunk; });
@@ -180,7 +179,7 @@ function getjsApiTicket(accessToken) {
             try {
                 const parsedData = JSON.parse(rawData);
                 jsapi_ticket = parsedData.ticket;
-                signature = getJsSdkSignature(jsapi_ticket, noncestr, timestamp, url);
+                getJsSdkSignature(jsapi_ticket, noncestr, timestamp, url);
             } catch (e) {
                 console.error(e.message);
             }
