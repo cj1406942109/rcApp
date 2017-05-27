@@ -136,6 +136,7 @@
             var recordTimer;
             $('#recordBtn').on('touchstart', function() {
                 // $("input[name='audio']").click();
+                $('#playBtn').html('正在录音...').addClass('recording');
                 event.preventDefault();
                 startTime = new Date().getTime();
                 recordTimer = setTimeout(function() {
@@ -152,6 +153,7 @@
 
             $('#recordBtn').on('touchend', function() {
                 event.preventDefault();
+                $('#playBtn').html('播放录音').removeClass('recording');
                 endTime = new Date().getTime();
                 if ((endTime - startTime) < 300) {
                     endTime = 0;

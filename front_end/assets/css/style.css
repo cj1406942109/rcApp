@@ -301,6 +301,10 @@ button {
     width: 2rem;
 }
 
+.recording {
+    background: #B3E866!important;
+}
+
 #submit {
     margin-top: 0.2rem;
     cursor: pointer;
